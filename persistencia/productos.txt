@@ -1,0 +1,32 @@
+[
+	{
+		"nombre": "lapicera",
+		"descripcion": "azul",
+		"codigo": "1020",
+		"foto": "https://cdn3.iconfinder.com/data/icons/streamline-icon-set-free-pack/48/Streamline-24-256.png",
+		"precio": 20,
+		"stock": 5000,
+		"id": 1,
+		"timestamp": "30/6/2021 09:42:45"
+	},
+	{
+		"nombre": "Producto de carrito modificado",
+		"descripcion": "usando PUT '/actualizar/:id'",
+		"codigo": "2200",
+		"foto": "https://cdn3.iconfinder.com/data/icons/streamline-icon-set-free-pack/48/Streamline-24-256.png",
+		"precio": 321,
+		"stock": 50,
+		"id": 2,
+		"timestamp": "30/6/2021 09:42:45"
+	},
+	{
+		"nombre": "calculadora",
+		"descripcion": "digital",
+		"codigo": "3003",
+		"foto": "https://cdn2.iconfinder.com/data/icons/picol-vector/32/calculator-256.png",
+		"precio": 500,
+		"stock": 1000,
+		"id": 3,
+		"timestamp": "30/6/2021 11:01:39"
+	}
+]

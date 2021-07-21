@@ -1,0 +1,4 @@
+mysql local
+mongodb local
+mongo atlas (es igual a mongo local pero cambia el string de conexion)
+
