@@ -2,20 +2,22 @@ const options = require('../config/mysqlConnection');
 const knex = require('knex')(options);
 const productos = require('.//productos');
 class Carrito {
-    constructor(producto) {        
+    constructor(producto) {
         this.crearTabla();
     }
-    
+
     async crearTabla() {
         try {
-            console.log('Borrando tabla carrito existente...');
-            await knex.schema.dropTable('carrito');
+            await knex.schema.hasTable('carrito').then(function (exists) {
+                if (!exists) {
+                    return knex.schema.createTable('carrito', table => {
+                        table.increments('id');
+                        table.string('timestamp');
+                        table.string('producto');
+                    });
 
-            await knex.schema.createTable('carrito', table => {
-                table.increments('id');
-                table.string('timestamp');                
-                table.string('producto');
-            });
+                }
+            })
             console.log('Tabla carrito creada!');
         } catch (error) {
             console.log(error);
@@ -31,13 +33,13 @@ class Carrito {
     }
     async listarPorId(idCarrito) {
         try {
-            let mensajes = await knex('carrito').where({id: idCarrito});
+            let mensajes = await knex('carrito').where({ id: idCarrito });
             return mensajes;
         } catch (error) {
             throw error;
         }
     }
-   
+
     async guardar(carrito) {
         try {
             let timestamp = new Date().toLocaleString();
@@ -47,12 +49,12 @@ class Carrito {
             throw error;
         }
     }
-    
+
     async borrar(idCarrito) {
         try {
-            let resultado = await knex('carrito').where({id: idCarrito}).del()
+            let resultado = await knex('carrito').where({ id: idCarrito }).del()
             return resultado;
-        } catch(error) {
+        } catch (error) {
             throw error;
         }
     }

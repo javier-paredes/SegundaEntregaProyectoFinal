@@ -6,7 +6,7 @@ const mysql = {
         password: '',
         database: 'mydb'
     },
-    pool: { min: 0, max: 7 }
+    pool: { min: 0, max: 10 }
 }
 
 module.exports = mysql;

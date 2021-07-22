@@ -6,21 +6,22 @@ class Productos {
         this.crearTabla();
     }
 
-    async crearTabla() {
+    async crearTabla() {        
         try {
-            console.log('Borrando tabla productos existente...');
-            await knex.schema.dropTable('productos')
-
-            await knex.schema.createTable('productos', table => {
-                table.increments('id');
-                table.string('nombre');
-                table.string('descripcion');
-                table.string('codigo');
-                table.string('foto');
-                table.integer('price');
-                table.integer('stock');
-                table.string('timestamp');
-            });
+            await knex.schema.hasTable('productos').then(function (exists) {
+                if (!exists) {
+                    return knex.schema.createTable('productos', table => {
+                        table.increments('id');
+                        table.string('nombre');
+                        table.string('descripcion');
+                        table.string('codigo');
+                        table.string('foto');
+                        table.integer('precio');
+                        table.integer('stock');
+                        table.string('timestamp');
+                    });
+                }
+            })
             console.log('Tabla productos creada!');
         } catch (error) {
             console.log(error);
@@ -35,11 +36,11 @@ class Productos {
             throw error;
         }
     }
-    
+
 
     async listarPorId(idProducto) {
         try {
-            let resultado = await knex('productos').where({id: idProducto});
+            let resultado = await knex('productos').where({ id: idProducto });
             return resultado;
         } catch (error) {
             throw error;
@@ -47,7 +48,7 @@ class Productos {
     }
 
     async guardar(producto) {
-        try {            
+        try {
             let timestamp = new Date().toLocaleString();
             producto.timestamp = timestamp
             let resultado = await knex('productos').insert(producto);
@@ -57,9 +58,10 @@ class Productos {
         }
     }
 
-    actualizar(idProducto, nuevoProducto) {
+    async actualizar(idProducto, nuevoProducto) {
         try {
-            knex('productos').where({id: idProducto}).update(nuevoProducto)
+            let resultado = await knex('productos').where({ id: idProducto }).update(nuevoProducto)
+            return resultado
         } catch (error) {
             console.log(error);
             throw new Error('No se pudo actualizar el producto');
@@ -68,9 +70,9 @@ class Productos {
 
     async borrar(idProducto) {
         try {
-            let resultado = await knex('productos').where({id: idProducto}).del()
+            let resultado = await knex('productos').where({ id: idProducto }).del()
             return resultado;
-        } catch(error) {
+        } catch (error) {
             throw error;
         }
     }

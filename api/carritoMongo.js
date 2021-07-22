@@ -4,14 +4,9 @@ const config = require('../config/mongo.json')
 
 class Carrito {
     constructor() {        
-        this.crearConexion();
+     
     }
     
-    async crearConexion() {
-        await mongoose.connect(config.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('conexion a la base de datos realizada!');        
-    }
-
     async listar() {
         try {
             let resultado = await ModeloCarrito.find({});
