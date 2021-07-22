@@ -1,4 +1,4 @@
 {
-    "MONGODB": "mongodb://localhost:27017/estudiantes",
-    "MONGODBaaS": "mongodb+srv://root:root@cluster0.1w8lp.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+    "MONGODB": "mongodb://localhost:27017/ecommercedb",
+    "MONGODBaaS": "mongodb+srv://dbJavier:fenixkai420@cluster0.t85ok.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 }

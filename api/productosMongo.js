@@ -1,15 +1,9 @@
 const mongoose = require('mongoose');
 const ModeloProductos = require('../models/productos')
-const config = require('../config/mongo.json')
+
 
 class Productos {
     constructor() {
-        this.crearConexion();
-    }
-
-    async crearConexion() {
-        await mongoose.connect(config.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('conexion a la base de datos realizada!');        
     }
 
     async listar() {
@@ -20,10 +14,10 @@ class Productos {
             throw error;
         }
     }
-    
+
     async listarPorId(idProducto) {
         try {
-            let resultado = await ModeloProductos.find({_id: idProducto})
+            let resultado = await ModeloProductos.find({ _id: idProducto })
             return resultado;
         } catch (error) {
             throw error;
@@ -31,7 +25,7 @@ class Productos {
     }
 
     async guardar(producto) {
-        try {            
+        try {
             let timestamp = new Date().toLocaleString();
             producto.timestamp = timestamp
             let resultado = await ModeloProductos.create(producto)
@@ -41,9 +35,9 @@ class Productos {
         }
     }
 
-    actualizar(idProducto, nuevoProducto) {
+    async actualizar(idProducto, nuevoProducto) {
         try {
-            let resultado = await ModeloProductos.findByIdAndUpdate(idProducto, {nuevoProducto} )
+            let resultado = await ModeloProductos.findByIdAndUpdate(idProducto, nuevoProducto)
             return resultado;
         } catch (error) {
             console.log(error);
@@ -55,7 +49,7 @@ class Productos {
         try {
             let resultado = await ModeloProductos.findByIdAndDelete(idProducto)
             return resultado;
-        } catch(error) {
+        } catch (error) {
             throw error;
         }
     }

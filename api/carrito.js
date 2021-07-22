@@ -1,8 +1,8 @@
 const options = require('../config/mysqlConnection');
 const knex = require('knex')(options);
-const productos = require('.//productos');
+const productos = require('./productos');
 class Carrito {
-    constructor(producto) {
+    constructor() {
         this.crearTabla();
     }
 
@@ -40,9 +40,20 @@ class Carrito {
         }
     }
 
-    async guardar(carrito) {
+    async guardar(idProducto) {
         try {
+            let carrito = {
+                id: 0,
+                timestamp: 'fecha',
+                producto: {}
+            }
+            let idCarrito = await knex('carrito').count('*');
             let timestamp = new Date().toLocaleString();
+            let producto = await productos.listarPorId(idProducto);
+            carrito.id = idCarrito;
+            carrito.timestamp = timestamp;
+            carrito.producto = JSON.stringify(producto, null, 3);
+
             let resultado = await knex('carrito').insert(carrito);
             return resultado;
         } catch (error) {
@@ -51,12 +62,18 @@ class Carrito {
     }
 
     async borrar(idCarrito) {
-        try {
+        try {            
             let resultado = await knex('carrito').where({ id: idCarrito }).del()
             return resultado;
         } catch (error) {
             throw error;
         }
+    }
+
+    async actualizar(idProducto, nuevoProducto) {
+        let producto = await productos.listarPorId(idProducto);
+        let resultado = await knex('carrito').where({ producto: producto }).update(nuevoProducto);
+        return resultado
     }
 }
 

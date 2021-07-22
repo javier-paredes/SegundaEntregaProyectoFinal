@@ -1,18 +1,20 @@
 require('dotenv').config()
 const express = require('express');
 const fs = require('fs');
-const productos = require('./api/productos');
-// const carrito = require('./api/carritoMongo')     // BASE DE DATOS DE MONGO
-const carrito = require('./api/carrito');        //BASE DE DATOS MYSQL
+// const productos = require('./api/productos');    //BASE DE DATOS MYSQL
+// const carrito = require('./api/carrito');        //BASE DE DATOS MYSQL
+const productos = require('./api/productosMongo')   // BASE DE DATOS DE MONGO
+const carrito = require('./api/carritoMongo')       // BASE DE DATOS DE MONGO
 const app = express();
 const mongo = require('./config/mongo.json')
 const mongoose = require('mongoose');
 
 async function connect() {
-    //COMENTAR Y DESCOMENTAR SEGUN SE QUIERA USAR MONGO EN LA NUBE O MONGO LOCAL RESPECTIVAMENTE
-    // await mongoose.connect(mongo.MONGODBaaS, { useNewUrlParser: true, useUnifiedTopology: true });
-    await mongoose.connect(mongo.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log(`mongoose conectado`);
+    //COMENTAR Y DESCOMENTAR SEGUN SE QUIERA USAR MONGO EN LA NUBE O MONGO LOCAL RESPECTIVAMENTE    
+    let uri = mongo.MONGODBaaS;
+    // let uri = mongo.MONGODB;
+    await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    console.log(`mongoose conectado en ${uri}`);
     return;
 }
 
@@ -25,6 +27,7 @@ const routerCarrito = express.Router();
 const routerProductos = express.Router();
 
 // PRODUCTOS
+// LISTAR
 routerProductos.get('/listar', async (req, res) => {
     let resultado = await productos.listar();
     res.json(resultado)
@@ -32,7 +35,7 @@ routerProductos.get('/listar', async (req, res) => {
 // LISTAR POR ID
 routerProductos.get('/listar/:id', async (req, res) => {
     let idProducto = req.params.id;
-    let productoPedido = await productos.listarPorID(idProducto);
+    let productoPedido = await productos.listarPorId(idProducto);
     res.json(productoPedido);
 })
 // AGREGAR
@@ -42,14 +45,14 @@ routerProductos.post('/agregar', async (req, res) => {
     res.json(resultado);
 })
 // ACTUALIZAR
-routerProductos.put('/actualizar/:id',  async (req, res) => {
+routerProductos.put('/actualizar/:id', async (req, res) => {
     let idProducto = req.params.id;
     let productoActualizado = req.body;
     let resultado = await productos.actualizar(idProducto, productoActualizado);
     res.json(resultado);
 })
 // BORRAR
-routerProductos.delete('/borrar/:id',  async (req, res) => {
+routerProductos.delete('/borrar/:id', async (req, res) => {
     let idProducto = req.params.id;
     let resultado = await productos.borrar(idProducto);
     res.json(resultado);
@@ -63,23 +66,32 @@ routerCarrito.get('/listar', async (req, res) => {
 })
 routerCarrito.get('/listar/:id', async (req, res) => {
     let idCarrito = req.params.id;
-    let resultado = await carrito.listarPorID(idCarrito);
+    let resultado = await carrito.listarPorId(idCarrito);
     res.json(resultado);
 })
+
 // AGREGAR PRODUCTOS
-let idIndividualCarrito = 0;
 routerCarrito.post('/agregar/:id_producto', async (req, res) => {
-    idIndividualCarrito += 1;
-    carrito.carrito.id += idIndividualCarrito;
     let idProducto = req.params.id_producto;
-    let resutlado = await carrito.agregar(idProducto);
-    res.json(resutlado);
+    let resultado = await carrito.guardar(idProducto);
+    res.json(resultado);
 })
+
+//ACTUALIZAR PRODUCTO
+routerCarrito.put('/actualizar/:id', async (req, res) => {
+    let idCarrito = req.params.id;
+    let nuevoProducto = req.body;
+    let resultado = await carrito.actualizar(idCarrito, nuevoProducto);
+    res.json(resultado);
+})
+
 //BORRAR PRODUCTOS
 routerCarrito.delete('/borrar/:id', async (req, res) => {
     let resultado = carrito.borrar(req.params.id);
     res.json(resultado);
 })
+
+
 
 // CREACION ROUTERS CARRITO Y PRODUCTOS
 app.use('/productos', routerProductos);
